@@ -93,4 +93,4 @@ PyTorch · einops · scikit-learn · Tesla P100 · Kaggle Notebooks
 
 ## Notebook
 
-[View full notebook on Kaggle](YOUR_KAGGLE_URL_HERE)
+[View full notebook on Kaggle](https://www.kaggle.com/code/balamuruganaiml/brain-tumor-mri-prt#Architecture:-PRT-(Patch-Range-Transformer))
