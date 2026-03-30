@@ -1,96 +1,226 @@
-# Patch Range Transformer (PRT) — Brain Tumor MRI Classification
+# 🧠 Patch Range Transformer (PRT) — Brain Tumor MRI Classification & Web App
 
-> A novel vision transformer architecture built entirely from scratch — no pretrained weights.
-
----
-
-## Result
-
-| Metric | Value |
-|--------|-------|
-| Test Accuracy | **91.44%** |
-| Parameters | 14.6M |
-| Training images | 5,600 |
-| Test images | 1,600 |
-| Classes | 4 |
-| Epochs | 100 |
+> A novel Vision Transformer architecture + deployed medical web application for real-time brain tumor detection.
 
 ---
 
-## Architecture — What makes PRT different
+## 🌐 System Overview
 
-| Model | Attention Style |
-|-------|----------------|
-| ViT | Every patch attends to every patch (full global) |
-| Swin | Patches attend within fixed window only (local) |
-| **PRT (ours)** | **Patches attend within radius R + CLS bridges globally** |
+![Web UI](UI.png)
+
+👉 Users can:
+
+* Upload MRI image (drag & drop)
+* Get instant prediction
+* View confidence score
+* Receive medical guidance
+
+---
+
+## 🎯 Problem
+
+Brain tumor diagnosis from MRI scans is:
+
+* Time-consuming
+* Requires expert radiologists
+* Prone to delay in early detection
+
+---
+
+## 💡 Solution
+
+We built an **end-to-end AI system**:
+
+* 🧠 Custom Deep Learning Model (PRT)
+* 🌐 Web Application (Flask)
+* 📊 Real-time Prediction + Medical Feedback
+
+---
+
+## 🚀 Key Features
+
+* ✅ Novel Transformer Architecture (PRT)
+* ✅ 92.44% Test Accuracy
+* ✅ Real-time MRI classification
+* ✅ Drag & Drop Web Interface
+* ✅ Confidence score output
+* ✅ Medical guidance for each prediction
+* ✅ Fully deployed Flask app
+
+---
+
+## 🧠 Model — Patch Range Transformer (PRT)
+
+### 🔥 Innovation
+
+| Model          | Attention                                         |
+| -------------- | ------------------------------------------------- |
+| ViT            | Global attention (O(N²))                          |
+| Swin           | Local window attention                            |
+| **PRT (Ours)** | **Local attention (radius R) + Global CLS token** |
+
+---
+
+### ⚙️ Mechanism
+
+* Patch tokens → Attend only to neighbors within radius R
+* CLS token → Attends globally to all patches
+* Final output → CLS + Mean pooled patch features
+
+---
+
+## 📊 Results
+
+| Metric        | Value        |
+| ------------- | ------------ |
+| Test Accuracy | **92.44%**   |
+| Parameters    | 14.6M        |
+| Dataset Size  | 7,200 images |
+| Classes       | 4            |
+| Epochs        | 100          |
+
+---
+
+## 📈 Performance Visualizations
+
+### 🔹 Training Curves
+
+![Training](prt_training_curves.png)
+
+### 🔹 Confusion Matrix
+
+![Confusion](prt_confusion_matrix.png)
+
+### 🔹 Classification Report
+
+![Report](prt_classification_report.png)
+
+---
+
+## 🏥 Medical Intelligence Layer
+
+The system provides **clinical-style feedback**:
+
+* **Glioma** → High-risk tumor, requires urgent consultation
+* **Meningioma** → Usually benign but needs monitoring
+* **Pituitary** → May affect hormones, needs evaluation
+* **No Tumor** → Healthy condition detected
+
+---
+
+## 🖥️ Web Application
+
+### Features:
+
+* Upload MRI image
+* Instant prediction
+* Confidence score
+* Medical recommendation
+* Clean medical UI
+
+---
+
+## ⚙️ Tech Stack
+
+* **Model**: PyTorch, einops
+* **Backend**: Flask
+* **Frontend**: HTML, CSS, JavaScript
+* **Visualization**: Matplotlib, Seaborn
+* **Training**: Kaggle (Tesla P100 GPU)
+
+---
+
+## 📁 Project Structure
+
 ```
-Each patch token  →  attends to neighbors within Chebyshev radius R=3 (49 patches max)
-CLS token         →  attends to ALL patches (global aggregator)
-All patches       →  can attend back to CLS token
-Final prediction  →  CLS output + mean of all patch outputs (fused)
+brain-tumor-app/
+├── app.py
+├── model.py
+├── model_architecture.py
+├── classes.json
+├── prt_model.pth
+├── templates/
+│   └── index.html
+├── static/
+│   └── uploads/
+├── UI.png
+└── README.md
 ```
 
 ---
 
-## Training Curves
+## ▶️ Run Locally
 
-![Training Curves](prt_training_curves.png)
+```bash
+git clone https://github.com/your-username/PRT-Brain-Tumor-MRI.git
+cd PRT-Brain-Tumor-MRI
 
----
+pip install -r requirements.txt
+python app.py
+```
 
-## Per-Class Results
-
-![Classification Report](prt_classification_report.png)
-
-
----
-
-## Confusion Matrix
-
-![Confusion Matrix](prt_confusion_matrix.png)
+👉 Open in browser:
+http://127.0.0.1:5000
 
 ---
 
-## Model Config
-```python
-IMG_SIZE   = 224
-PATCH_SIZE = 16       # 14x14 = 196 patches
-EMBED_DIM  = 384
-NUM_HEADS  = 12
-NUM_LAYERS = 8
-RANGE_R    = 3        # each patch attends to 49 spatial neighbors
-EPOCHS     = 100
-LR         = 3e-4     # cosine decay with 5-epoch linear warmup
-LOSS       = FocalLoss(gamma=2.0, label_smoothing=0.1)
+## 📦 Requirements
+
+```
+torch
+torchvision
+flask
+pillow
+einops
 ```
 
 ---
 
-## Key Findings
+## 🔬 Dataset
 
-- No Tumor and Pituitary classified near-perfectly — 100% and 98% recall
-- Glioma is the hardest class (75.5% recall) — visually similar to meningioma
-- CLS + mean pooling fusion outperforms CLS-only by ~2%
-- LR warmup (5 epochs linear) was critical — without it model diverged early
-- Bigger model (32M params) performed worse — 14.6M is the right size for 5,600 images
+Brain Tumor MRI Dataset (Kaggle)
+Classes:
 
----
-
-## Dataset
-
-**Brain Tumor MRI** by Masoud Nickparvar  
-Source: [Kaggle Dataset](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset)  
-4 classes: Glioma · Meningioma · No Tumor · Pituitary
+* Glioma
+* Meningioma
+* Pituitary
+* No Tumor
 
 ---
 
-## Stack
+## 🧠 Key Learnings
 
-PyTorch · einops · scikit-learn · Tesla P100 · Kaggle Notebooks
+* Spatially constrained attention improves efficiency
+* CLS + patch fusion improves performance
+* Preprocessing consistency is critical for inference
+* Deployment makes ML models usable in real-world
 
 ---
 
-## Notebook
+## 🏆 Project Highlights
 
-[View full notebook on Kaggle](https://www.kaggle.com/code/balamuruganaiml/brain-tumor-mri-prt#Architecture:-PRT-(Patch-Range-Transformer))
+* Designed a **novel transformer architecture (PRT)** from scratch
+* Achieved **92.44% accuracy**
+* Built a **full-stack AI system**
+* Enabled **real-time medical prediction**
+* Created a **user-friendly healthcare interface**
+
+---
+
+## ⚠️ Disclaimer
+
+This project is for **educational and research purposes only**.
+Not intended for real medical diagnosis.
+
+---
+
+## 👨‍💻 Author
+
+**Bala Murugan**
+AI / Machine Learning Engineer
+
+🔗 https://github.com/Balamurugan245
+
+---
+
+⭐ If you found this project useful, consider giving it a star!
